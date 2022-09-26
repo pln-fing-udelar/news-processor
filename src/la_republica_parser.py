@@ -5,6 +5,9 @@ from pathlib import Path
 import utils
 
 def parse_data():
+
+  utils.create_folder('output/la_republica')
+
   paths = [str(x) for x in Path("./input/la_republica").glob("*.xml")]
 
   for path in paths:
