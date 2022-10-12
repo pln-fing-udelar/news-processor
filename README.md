@@ -23,3 +23,12 @@ python la_republica_parser.py
 1. Write the specific code for the dataset as a function. If you also want, create the \_\_main\_\_ method to be called from outside. Please remember to create the corresponding folder into `output` folder.
 2. Save the file in `/src/_here_`
 3. Import the new script in `/src/main_parser`
+
+## If you have created a new script to parse a new dataset, and don't want to run all previous parsers
+**Assuming you** you already have all the other parsed datasets.
+1. Run the specific script you've implemented
+2. Open a python console and wirte: 
+```
+import main_parser as mp
+mp.join_all_files()
+```
