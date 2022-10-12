@@ -25,6 +25,9 @@ def parse_data(
 
     result = re.findall(pattern, file_str, re.MULTILINE | re.IGNORECASE)
 
+    # Remove undesired lines
+    result = utils.remove_undesired_lines(result)
+
     # Remove special characters
     beautified_result = list(map(utils.beautify_text, result))
 
@@ -33,6 +36,8 @@ def parse_data(
 
     # Delete duplicated text
     beautified_result = list(set(beautified_result))
+
+    beautified_result = list(map(utils.clean_elpais_text, beautified_result))
 
     new_file = path.split('/')[-1].split('.')[0]
     with open(f'{output}{new_file}.txt', "w") as f:
