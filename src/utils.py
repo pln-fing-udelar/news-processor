@@ -2,6 +2,24 @@ import re
 import html
 import unicodedata
 import os
+from unidecode import unidecode
+
+def sanitice_text(txt):
+
+  # estoy interesado en obtener todos los caracteres que no sean:
+
+  # 1. ASCII
+  whiteList = '\x00-\x7F'
+
+  # 2. ¿ ¡ tildes y enies
+  whiteList += '¿¡À-ÿñÑ'
+
+  regex = r'[^{}]'.format(whiteList)
+  patt = re.compile(regex)
+
+  sanitice_char = lambda c: unidecode(c) if patt.match(c) else c
+  
+  return "".join([sanitice_char(c) for c in txt])
 
 is_txt_postfix = lambda p: p[-4:] == ".txt"
 
@@ -84,6 +102,37 @@ def clean_elpais_text(text):
   replace_pattern = r"\¿?Te interesa esta noticia\?"
   text = re.sub(replace_pattern, '', text)  
 
+  # Texto "AFP"
+  replace_pattern = r"AFP"
+  text = re.sub(replace_pattern, '', text)  
+
+  # Fechas
+  # Formato dd mmm YYYY
+  # al inicio
+  replace_pattern = r"^\d\d \w\w\w \d\d\d\d"
+  text = re.sub(replace_pattern, '', text)  
+
+  # dentro el string
+  replace_pattern = r"\d\d \w\w\w \d\d\d\d"
+  text = re.sub(replace_pattern, '.', text)  
+
+  # Formato  dia mes nn YYYY hh:mm 
+  # al inicio
+  replace_pattern = r"^\w\w\w \w\w\w \d\d \d\d\d\d \d\d:\d\d"
+  text = re.sub(replace_pattern, '', text)
+
+  # dentro del string
+  replace_pattern = r"\w\w\w \w\w\w \d\d \d\d\d\d \d\d:\d\d"
+  text = re.sub(replace_pattern, '.', text)
+
+  # Formato -dia mmm dd YYYY- (sin hora)
+  # al inicio
+  replace_pattern = r"^\w\w\w \w\w\w \d\d \d\d\d\d"
+  text = re.sub(replace_pattern, '', text)
+
+  # dentro del string
+  replace_pattern = r"\w\w\w \w\w\w \d\d \d\d\d\d"
+  text = re.sub(replace_pattern, '.', text) 
 
     
   return text
