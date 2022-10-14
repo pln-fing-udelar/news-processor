@@ -19,6 +19,17 @@ def removing_date_and_time(text):
 
   return result
 
+is_txt_postfix = lambda p: p[-4:] == ".txt"
+
+def die(msg):
+  print(msg)
+  os._exit(1)
+
+# si no exite `path`, la crea
+def assure_path(path):
+  if not os.path.exists(os.path.dirname(path)):
+    create_folder(os.path.dirname(path))
+
 def create_folder(folder_path):
   try:
     os.makedirs(folder_path)
