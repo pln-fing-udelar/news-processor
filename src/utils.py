@@ -33,5 +33,5 @@ def assure_path(path):
 def create_folder(folder_path):
   try:
     os.makedirs(folder_path)
-  except:
-    pass
+  except Exception as e:
+    die(e)
