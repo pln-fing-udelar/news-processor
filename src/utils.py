@@ -21,6 +21,8 @@ def removing_date_and_time(text):
 
 is_txt_postfix = lambda p: p[-4:] == ".txt"
 
+DEFAULT_VERBOSE = True
+
 def die(msg):
   print(msg)
   os._exit(1)
