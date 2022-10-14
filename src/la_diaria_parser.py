@@ -146,10 +146,15 @@ trim = lambda txt: re.sub(r'\n\s*\n', '\n', txt.strip())
 
 
 def parse_data(
-  input='/home/jp/Workspace/pln/notebooks/preproc/Latest20k.json',
-  output='la-diaria.txt'
+  input='input/la_diaria/Latest20k.json',
+  output='output/la_diaria/la-diaria.txt'
 ):
-  utils.create_folder('output/la_diaria')
+  
+  if not utils.is_txt_postfix(output):
+    utils.die("el output debe terminar en .txt")
+
+  utils.assure_path(output)
+
   f = open(input)
   data = json.loads(f.read())
   f.close()
@@ -171,5 +176,6 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   parser.add_argument('-i', '--input', default='Latest20k.json')
   parser.add_argument('-o', '--output', default='output/la_diaria/la-diaria.txt')
+  parser.add_argument('-v', '--verbose', default=True)
   args = parser.parse_args()
   parse_data(args.input, args.output)
