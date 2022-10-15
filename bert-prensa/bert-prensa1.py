@@ -111,7 +111,6 @@ trainer = Trainer(
 # Start trainig
 trainer.train()
 
-# ===============================================  ARREGLAR! =================================================================
 # Save final model (+ tokenizer + config) to disk
 trainer.save_model("./UruNotiBERTo")
 
