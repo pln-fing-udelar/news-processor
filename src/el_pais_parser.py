@@ -42,8 +42,8 @@ def parse_data(
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', default='Latest20k.json')
-    parser.add_argument('-o', '--output', default='output/la_diaria/la-diaria.txt')
+    parser.add_argument('-i', '--input', default='input/el_pais')
+    parser.add_argument('-o', '--output', default='output/el_pais/')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('--no-verbose', dest='verbose', action='store_false')
     parser.set_defaults(verbose=utils.DEFAULT_VERBOSE)
