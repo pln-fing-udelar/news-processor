@@ -1,14 +1,18 @@
-import os
 import re
+import argparse
 from pathlib import Path
 
 import utils
 
-def parse_data():
+def parse_data(
+  input='input/el_pais',
+  output='output/el_pais/',
+  verbose=utils.DEFAULT_VERBOSE,
+):
 
-  utils.create_folder('output/el_pais')
+  utils.create_folder(output)
 
-  paths = [str(x) for x in Path("./input/el_pais").glob("*.xml")]
+  paths = [str(x) for x in Path(input).glob("*.xml")]
 
   for path in paths:
     print(f'Processing {path}... ')
@@ -31,9 +35,18 @@ def parse_data():
     beautified_result = list(set(beautified_result))
 
     new_file = path.split('/')[-1].split('.')[0]
-    with open(f'output/el_pais/{new_file}.txt', "w") as f:
+    with open(f'{output}{new_file}.txt', "w") as f:
       for text in beautified_result:
           f.write(text +"\n")
 
 if __name__ == "__main__":
-    parse_data()
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--input', default='input/el_pais')
+    parser.add_argument('-o', '--output', default='output/el_pais/')
+    parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('--no-verbose', dest='verbose', action='store_false')
+    parser.set_defaults(verbose=utils.DEFAULT_VERBOSE)
+    args = parser.parse_args()
+    
+    parse_data(args.input, args.output, args.verbose)

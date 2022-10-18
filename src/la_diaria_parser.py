@@ -1,5 +1,6 @@
 # nativas
 import re
+import sys
 import json
 import argparse
 # 3eros
@@ -43,11 +44,15 @@ last_child   = lambda cs: cs[-1] if cs else None
 _is          = lambda el, tagname: el.name == tagname
 has_class    = lambda el, cl: el != None and el.get("class") and cl in el.get("class")
 
-def curate(data):
+def curate(data, verbose):
+
+  if verbose:
+    print("curating...", file=sys.stderr)
+
   curated = []
   cat_blacklist = ['humor', 'humor-lento','0'] # '0' representa "sin categoria"
 
-  for d in tqdm(data[:]):      
+  for d in tqdm(data[:], disable=not verbose):
     if get_cat(get_cat_link(d)) in cat_blacklist:
       curated.append(None)
       continue
@@ -59,7 +64,7 @@ def curate(data):
     for el in a.select('div.extension'):
       el.decompose()
     
-    # 3. se eliminan las imagenes
+    # 3. se eliminan las imagenes 
     for el in a.select('div.inline-image-wrap'):
       el.decompose()
     
@@ -98,7 +103,10 @@ def curate(data):
   return curated
     
 
-def sanatice(curated):
+def sanatice(curated, verbose):
+
+  if verbose:
+    print("sanitizing...", file=sys.stderr)
   
   def get_text(tag:Tag) -> str:
     _inline_elements = {"a","span","em","strong","u","i","font","mark","label",
@@ -127,15 +135,19 @@ def sanatice(curated):
   sanitice_text = lambda txt: "".join([sanitice_char(c) for c in txt])
   sanitized = [
     sanitice_text(get_text(c)) if c else None
-    for c in tqdm(curated[:])
+    for c in tqdm(curated[:], disable=not verbose)
   ]
   return sanitized
 
-def rm_links(sanitized):
+def rm_links(sanitized, verbose):
+
+  if verbose:
+    print("removing explicit links...", file=sys.stderr)
+
   remove_links = lambda txt: re.sub(r'https?://\S+', 'link', txt)
   return [
     remove_links(c) if c else None
-    for c in tqdm(sanitized[:])
+    for c in tqdm(sanitized[:], disable=not verbose)
   ]
 
 def rm_shorties(sanitized):
@@ -146,18 +158,31 @@ trim = lambda txt: re.sub(r'\n\s*\n', '\n', txt.strip())
 
 
 def parse_data(
-  input='/home/jp/Workspace/pln/notebooks/preproc/Latest20k.json',
-  output='la-diaria.txt'
+  input='input/la_diaria/Latest20k.json',
+  output='output/la_diaria/la-diaria.txt',
+  verbose=utils.DEFAULT_VERBOSE,
 ):
-  utils.create_folder('output/la_diaria')
+  
+  if not utils.is_txt_postfix(output):
+    utils.die("el output debe terminar en .txt")
+
+  utils.assure_path(output)
+
   f = open(input)
   data = json.loads(f.read())
   f.close()
 
-  sanitized = rm_shorties(rm_links(sanatice(curate(simplify(data)))))
+  out = simplify(data)
+  out = curate(out, verbose)
+  out = sanatice(out,verbose)
+  out = rm_links(out,verbose)
+  out = rm_shorties(out)
+
+  if verbose:
+    print("writing...", file=sys.stderr)
 
   with open(output, 'w', encoding='utf-8') as f:
-    for s in tqdm(sanitized):
+    for s in tqdm(out, disable=not verbose):
       if not s: continue;
       f.write(trim(s) + "\n\n")
     
@@ -168,8 +193,13 @@ def parse_data(
     
 
 if __name__ == "__main__":
+
   parser = argparse.ArgumentParser()
   parser.add_argument('-i', '--input', default='Latest20k.json')
   parser.add_argument('-o', '--output', default='output/la_diaria/la-diaria.txt')
+  parser.add_argument('-v', '--verbose', action='store_true')
+  parser.add_argument('--no-verbose', dest='verbose', action='store_false')
+  parser.set_defaults(verbose=utils.DEFAULT_VERBOSE)
   args = parser.parse_args()
-  parse_data(args.input, args.output)
+  
+  parse_data(args.input, args.output, args.verbose)
