@@ -149,5 +149,13 @@ def clean_elpais_text(text):
   text = re.sub(replace_pattern, '.', text)
   # faltan evaluar unnos casos
 
+  # Texto "Otras Ediciones" - Ambas letras en mayuscula
+  replace_pattern = r"Otras Ediciones$"
+  text = re.sub(replace_pattern, '', text) 
+
+  # Texto entre pipes, formato "| PALABRA (SIMBOLO)|"
+  replace_pattern = r"\| \w*? .?\|"
+  text = re.sub(replace_pattern, '', text)  
+ 
 
   return text
