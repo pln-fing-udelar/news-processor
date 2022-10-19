@@ -7,7 +7,6 @@ from unidecode import unidecode
 def sanitice_text(txt):
 
   # estoy interesado en obtener todos los caracteres que no sean:
-
   # 1. ASCII
   whiteList = '\x00-\x7F'
 
@@ -16,7 +15,6 @@ def sanitice_text(txt):
 
   regex = r'[^{}]'.format(whiteList)
   patt = re.compile(regex)
-
   sanitice_char = lambda c: unidecode(c) if patt.match(c) else c
   
   return "".join([sanitice_char(c) for c in txt])
@@ -74,6 +72,8 @@ def remove_undesired_lines(lines):
   
 # text = una noticia
 def clean_elpais_text(text):
+  # sanitizo el texto
+  text = sanitice_text(text)
 
   # Texto "Utilidades" al final
   replace_pattern = r"Utilidades$"
