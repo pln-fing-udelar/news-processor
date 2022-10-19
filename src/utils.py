@@ -67,6 +67,9 @@ def remove_undesired_lines(lines):
   regex =  r"CondeLeonardo@netscape.net"
   resulting_lines = list(filter(lambda line: not(re.search(regex, line, re.IGNORECASE)), resulting_lines))
 
+  regex = r'CondeLeonardo@aol.com'
+  resulting_lines = list(filter(lambda line: not(re.search(regex, line, re.IGNORECASE)), resulting_lines))
+
   return resulting_lines
   
 # text = una noticia
@@ -89,14 +92,14 @@ def clean_elpais_text(text):
   text = re.sub(replace_pattern, '', text)
 
   # Texto formato "No salgas a la calle sin"
-  replace_pattern = r"No salgas a la calle sin$"
-  text = re.sub(replace_pattern, '', text)  
-
   replace_pattern = r"No salgas a la calle sin saber de qué se habla..."
   text = re.sub(replace_pattern, '', text)
 
   replace_pattern = r"No salgas a la calle sin ver más► saber de qué se habla"
   text = re.sub(replace_pattern, '', text)
+
+  replace_pattern = r"No salgas a la calle sin$"
+  text = re.sub(replace_pattern, '', text)  
 
   # Texto "¿Te interesa esta noticia?" en el inicio
   replace_pattern = r"\¿?Te interesa esta noticia\?"
@@ -134,5 +137,17 @@ def clean_elpais_text(text):
   replace_pattern = r"\w\w\w \w\w\w \d\d \d\d\d\d"
   text = re.sub(replace_pattern, '.', text) 
 
-    
+  # Elimino autores - formato " Por AAA AAA |"
+  replace_pattern = r"(\w)(\s*Por \w* \w* \|)"
+  text = re.sub(replace_pattern, r'\1.', text, re.IGNORECASE)
+
+  replace_pattern = r"\s*Por \w* \w* \|"
+  text = re.sub(replace_pattern, '', text, 0, re.IGNORECASE)
+  
+  # Elimino texto "Foto: -origen-"
+  replace_pattern = r"(Foto:.*?)(\/|\.|AP|EFE|AFP|Archivo El Pais|Temas|Facebook Comite de los Derechos del Nino del Uruguay Centros del Sirpa|Alexis Ferreira|Gentileza Policia de San Jose|Maria Ines Hiriart|Ricardo Figueredo|Facebook Carolina Mallo Sosa|Facebook Jose Maria Techera|Facebook Roberto Caseres|Facebook Richard Silveira|Dilva Devita|Facebook Comite de los Derechos del Nino|El Pais Entierro del policia Ariel Silva|Ariel Colmegna Primera boda  bajo la ley)"
+  text = re.sub(replace_pattern, '.', text)
+  # faltan evaluar unnos casos
+
+
   return text
