@@ -145,9 +145,11 @@ def clean_elpais_text(text):
   text = re.sub(replace_pattern, '', text, 0, re.IGNORECASE)
   
   # Elimino texto "Foto: -origen-"
-  replace_pattern = r"(Foto:.*?)(\/|\.|AP|EFE|AFP|Archivo El Pais|Temas|Facebook Comite de los Derechos del Nino del Uruguay Centros del Sirpa|Alexis Ferreira|Gentileza Policia de San Jose|Maria Ines Hiriart|Ricardo Figueredo|Facebook Carolina Mallo Sosa|Facebook Jose Maria Techera|Facebook Roberto Caseres|Facebook Richard Silveira|Dilva Devita|Facebook Comite de los Derechos del Nino|El Pais Entierro del policia Ariel Silva|Ariel Colmegna Primera boda  bajo la ley)"
+  r"(Foto:.*?)(\/|\.|AP|EFE|AFP|Archivo El Pais|Temas|Facebook Comite de los Derechos del Nino del Uruguay Centros del Sirpa|Alexis Ferreira|Gentileza Policia de San Jose|Maria Ines Hiriart|Ricardo Figueredo|Facebook Carolina Mallo Sosa|Facebook Jose Maria Techera|Facebook Roberto Caseres|Facebook Richard Silveira|Dilva Devita|Facebook Comite de los Derechos del Nino|El Pais Entierro del policia Ariel Silva|Ariel Colmegna Primera boda  bajo la ley|Alicia Brassesco|BQB|ARCHIVO|Carnan Abona|)"
   text = re.sub(replace_pattern, '.', text)
-  # faltan evaluar unnos casos
+  r"(Foto:.*?)(Daniel Ayala|Daniel Rojas|Julio Barcelos|LA NACION|GDA|Gentileza de Jose Luis Cuna|Archivo de El Pais|Marcelo Bonjour|Gentileza de Jose Luis Cuna Temas Sinies|Archivo de El Pais|Archivo El Pais)"
+  text = re.sub(replace_pattern, '.', text)
+  # To Do: faltan evaluar unos casos  -----------------------------------------------------------------------------------------------------------------------------
 
   # Texto "Otras Ediciones" - Ambas letras en mayuscula
   replace_pattern = r"Otras Ediciones$"
@@ -156,6 +158,17 @@ def clean_elpais_text(text):
   # Texto entre pipes, formato "| PALABRA (SIMBOLO)|"
   replace_pattern = r"\| \w*? .?\|"
   text = re.sub(replace_pattern, '', text)  
+  # To Do: tengo que seguir revisando este caso  de pipes ------------------------------------------------------------------------------------------------------------------------------
  
+  # Elimino texto "El Pais Digital"  
+  replace_pattern = r"(AFP)? El Pais Digital\n"
+  text = re.sub(replace_pattern, '', text, re.IGNORECASE)  
+
+  replace_pattern = r"AFP El Pais Digital."
+  text = re.sub(replace_pattern, '', text, re.IGNORECASE) 
+
+  # texto "El Pais Digital" se reserva el derecho de editar......
+  replace_pattern = r"El Pais Digital se reserva el derecho de editar los mensajes que usted envie a los efectos de su mejor comprension por otros usuarios. (Nuevo seudonimo:)?"
+  text = re.sub(replace_pattern, '', text)
 
   return text
