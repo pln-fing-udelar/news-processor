@@ -58,14 +58,23 @@ def removing_date_and_time(text):
 ## el pais ##
 
 def remove_undesired_lines(lines):
-  regex =  r"Boris Cristoff .*?Digital\n"
+  # elimino lineas con caracteres corruptos
+  corrupto = lambda art: '�' in art
+  resulting_lines = list(filter(lambda line: not(corrupto(line)), lines))
 
+  regex =  r"Boris Cristoff .*?Digital\n"
   resulting_lines = list(filter(lambda line: not(re.search(regex, line)), lines))
 
   regex =  r"CondeLeonardo@netscape.net"
   resulting_lines = list(filter(lambda line: not(re.search(regex, line, re.IGNORECASE)), resulting_lines))
 
   regex = r'CondeLeonardo@aol.com'
+  resulting_lines = list(filter(lambda line: not(re.search(regex, line, re.IGNORECASE)), resulting_lines))
+
+  regex =  r"horizontales.*?\d\)"
+  resulting_lines = list(filter(lambda line: not(re.search(regex, line, re.IGNORECASE)), resulting_lines))
+
+  regex = r"Leonardo Conde"
   resulting_lines = list(filter(lambda line: not(re.search(regex, line, re.IGNORECASE)), resulting_lines))
 
   return resulting_lines
@@ -170,5 +179,14 @@ def clean_elpais_text(text):
   # texto "El Pais Digital" se reserva el derecho de editar......
   replace_pattern = r"El Pais Digital se reserva el derecho de editar los mensajes que usted envie a los efectos de su mejor comprension por otros usuarios. (Nuevo seudonimo:)?"
   text = re.sub(replace_pattern, '', text)
+
+  # texto "EFE"
+  replace_pattern = r" EFE "
+  total_result = re.sub(replace_pattern, '', text)  
+
+  replace_pattern = r"\(EFE\)"
+  total_result = re.sub(replace_pattern, '', total_result)  
+  # To Do: tengo que seguir revisando este caso  de del contexto de EFE ------------------------------------------------------------------------------------------------------------------------------
+
 
   return text
