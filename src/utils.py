@@ -37,6 +37,28 @@ def create_folder(folder_path):
     os.makedirs(folder_path)
   except Exception as e:
     die(e)
+def replace_characters(text):
+  replace_dict = {
+                  'á': 'á',
+                  'é': 'é',
+                  'í': 'í',
+                  'ó': 'ó',
+                  'ú': 'ú',
+                  'ñ': 'ñ',
+                  'Á': 'Á',
+                  'É': 'É',
+                  'Í': 'Í',
+                  'Ó': 'Ó',
+                  'Ú': 'Ú',
+                  'Ñ': 'Ñ'
+                  }
+  output = text
+  for original, replacement in replace_dict.items():
+    print(replacement)
+    output = output.replace(original, replacement)
+    
+  return output
+
 
 def beautify_text(text):
   rs = text.replace('<field name="articulo">', '')
@@ -82,6 +104,7 @@ def remove_undesired_lines(lines):
 # text = una noticia
 def clean_elpais_text(text):
   # sanitizo el texto
+  text = replace_characters(text)
   text = sanitice_text(text)
 
   # Texto "Utilidades" al final
