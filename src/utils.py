@@ -54,7 +54,6 @@ def replace_characters(text):
                   }
   output = text
   for original, replacement in replace_dict.items():
-    print(replacement)
     output = output.replace(original, replacement)
     
   return output
@@ -124,10 +123,13 @@ def clean_elpais_text(text):
   text = re.sub(replace_pattern, '', text)
 
   # Texto formato "No salgas a la calle sin"
-  replace_pattern = r"No salgas a la calle sin saber de qué se habla..."
+  replace_pattern = r"No salgas a la calle sin saber de qué se habla..."
   text = re.sub(replace_pattern, '', text)
 
-  replace_pattern = r"No salgas a la calle sin ver más► saber de qué se habla"
+  replace_pattern = r"No salgas a la calle sin ver más► saber de qué se habla"
+  text = re.sub(replace_pattern, '', text)
+
+  replace_pattern = r"No salgas a la calle sin ver más> saber de qué se habla"
   text = re.sub(replace_pattern, '', text)
 
   replace_pattern = r"No salgas a la calle sin$"
@@ -193,7 +195,7 @@ def clean_elpais_text(text):
   # To Do: tengo que seguir revisando este caso  de pipes ------------------------------------------------------------------------------------------------------------------------------
  
   # Elimino texto "El Pais Digital"  
-  replace_pattern = r"(AFP)? El Pais Digital\n"
+  replace_pattern = r"(AFP)? El Pais Digital$"
   text = re.sub(replace_pattern, '', text, re.IGNORECASE)  
 
   replace_pattern = r"AFP El Pais Digital."
@@ -205,11 +207,13 @@ def clean_elpais_text(text):
 
   # texto "EFE"
   replace_pattern = r" EFE "
-  total_result = re.sub(replace_pattern, '', text)  
+  text = re.sub(replace_pattern, '', text)  
 
   replace_pattern = r"\(EFE\)"
-  total_result = re.sub(replace_pattern, '', total_result)  
+  text = re.sub(replace_pattern, '', text)  
   # To Do: tengo que seguir revisando este caso  de del contexto de EFE ------------------------------------------------------------------------------------------------------------------------------
 
-
+  # texto "Otras notas de Editorial"
+  replace_pattern = r"Otras notas de Editorial"
+  text = re.sub(replace_pattern, '', text, re.IGNORECASE)  
   return text
