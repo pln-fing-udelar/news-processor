@@ -1,3 +1,4 @@
+from doctest import OutputChecker
 import re
 import html
 import unicodedata
@@ -81,25 +82,177 @@ def removing_date_and_time(text):
 def remove_undesired_lines(lines):
   # elimino lineas con caracteres corruptos
   corrupto = lambda art: '�' in art
+  
+  regex =  r"Boris Cristoff .*?Digital\n"
+  contiene_boris = lambda art: re.search(regex, art) is not None
+  contiene_aries = lambda art: 'Aries' in art
+  es_horoscopo = lambda art: contiene_boris(art) | contiene_aries(art)
+
+  regex_conde_1 = r"CondeLeonardo@netscape.net"
+  contiene_conde_1 = lambda art: re.search(regex_conde_1, art, re.IGNORECASE) is not None
+  regex_conde_2 = r"CondeLeonardo@aol.com"
+  contiene_conde_2 = lambda art: re.search(regex_conde_2, art, re.IGNORECASE) is not None
+  regex_horizontales = r"horizontales.*?\d\)"
+  contiene_horizontales = lambda art: re.search(regex_horizontales, art, re.IGNORECASE) is not None
+  regex_conde_3 = r"Leonardo Conde"
+  contiene_conde_3 = lambda art: re.search(regex_conde_3, art, re.IGNORECASE) is not None
+  es_crucigrama = lambda art: contiene_conde_1(art) | contiene_conde_2(art) | contiene_horizontales(art) | contiene_conde_3(art)
+
+  
   resulting_lines = list(filter(lambda line: not(corrupto(line)), lines))
 
-  regex =  r"Boris Cristoff .*?Digital\n"
-  resulting_lines = list(filter(lambda line: not(re.search(regex, line)), lines))
+  resulting_lines = list(filter(lambda line: not(es_horoscopo(line)), resulting_lines))
 
-  regex =  r"CondeLeonardo@netscape.net"
-  resulting_lines = list(filter(lambda line: not(re.search(regex, line, re.IGNORECASE)), resulting_lines))
-
-  regex = r'CondeLeonardo@aol.com'
-  resulting_lines = list(filter(lambda line: not(re.search(regex, line, re.IGNORECASE)), resulting_lines))
-
-  regex =  r"horizontales.*?\d\)"
-  resulting_lines = list(filter(lambda line: not(re.search(regex, line, re.IGNORECASE)), resulting_lines))
-
-  regex = r"Leonardo Conde"
-  resulting_lines = list(filter(lambda line: not(re.search(regex, line, re.IGNORECASE)), resulting_lines))
+  resulting_lines = list(filter(lambda line: not(es_crucigrama(line)), resulting_lines))
 
   return resulting_lines
+
+def clean_jorge_chouy(line):
+  out = line
+
+  replace_pattern = r' Por Jorge Chouy jchouy@seragro.com.uy'
+  out = re.sub(replace_pattern, '.', out)
+
+  replace_pattern = r' Por Jorge Chouy - jchouy@seragro.com.uy'
+  out = re.sub(replace_pattern, '.', out)
+
+  replace_pattern = r' Por Jorge Chouy, jchouy@seragro.com.uy'
+  out = re.sub(replace_pattern, '.', out)
+
+  replace_pattern = r' INFORME ELABORADO POR JORGE CHOUY Y HÉCTOR LUNA \| jchouy@seragro.com.uy / hluna@seragro.com.uy TRANSCRIPCIÓN DE GRACIELA GIRIBALDI'
+  out = re.sub(replace_pattern, '.', out)
+
+  replace_pattern = r' Jorge Chouy \| jchouy@seragro.com.uy'
+  out = re.sub(replace_pattern, '.', out)
+
+  replace_pattern = r' jchouy@seragro.com.uy'
+  out = re.sub(replace_pattern, '', out)
+
+  return out
+
+def clean_gaston_pergola(line):
+  out = line
+
+  replace_pattern = r' Por Gastón Pérgola gpergola@elpais.com.uy'
+  out = re.sub(replace_pattern, '.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r' POR GASTÓN PÉRGOLA - gpergola@elpais.com.uy'
+  out = re.sub(replace_pattern, '.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r' POR GASTÓN PÉRGOLA\| gpergola@elpais.com.uy'
+  out = re.sub(replace_pattern, '.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r' MARCELO GALLARDO Y GASTÓN PÉRGOLA'
+  out = re.sub(replace_pattern, '.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r' Punta del Este \| Gastón Pérgola'
+  out = re.sub(replace_pattern, '.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r'Gastón Pérgola'
+  out = re.sub(replace_pattern, '.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r'gpergola@elpais.com.uy'
+  out = re.sub(replace_pattern, '.', out, 9999, re.IGNORECASE)
+
+  return out
+
+def clean_sebastian_panzl(line):
+  out = line
+
+  replace_pattern = r' Por Sebastián Panzl spanzl@elpais.com.uy'
+  out = re.sub(replace_pattern, '.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r' Por Sebastián Panzl - spanzl@elpais.com.uy'
+  out = re.sub(replace_pattern, '.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r'spanzl@elpais.com.uy'
+  out = re.sub(replace_pattern, '', out, 9999, re.IGNORECASE)
+
+  return out
+
+def clean_claudio_destefano(line):
+  out = line
+
+  replace_pattern = r'(Por )?(Claudio Destéfano.*?claudio@bizers.com.ar)'
+  out = re.sub(replace_pattern, r'.', out, 9999, re.IGNORECASE)
+
+  return out
+
+def clean_antonio_larronda(line):
+  out = line
+
+  replace_pattern = r'(Por)?\s*(Antonio Larronda)?\s*?(alarronda@elpais.com.uy|\|\s*?alarronda@elpais.com.uy|\(alarronda@elpais.com.uy\)|-?\[alarronda@elpais.com.uy\])'
+  out = re.sub(replace_pattern, r'\.', out, 999, re.IGNORECASE)
   
+  return out
+
+def clean_elbio_rodriguez(line):
+  out = line
+
+  replace_pattern = r'(Por )?(Elbio )?(Rodriguez Barilari\s*?barilari@laraza.com)'
+  out = re.sub(replace_pattern, r'', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r'(Por )?(Elbio )?(Rodrguez Barilari\s*?barilari@laraza.com)'
+  out = re.sub(replace_pattern, r'', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r'barilari@laraza.com'
+  out = re.sub(replace_pattern, r'', out, 9999, re.IGNORECASE)
+
+  return out
+
+def clean_stella_maris(line):
+  out = line
+
+  replace_pattern = r'POR STELLA M. PUSINO \/ spusino@elpais.com.uy'
+  out = re.sub(replace_pattern, r'.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r'POR STELLA M. PUSINO \| spusino@elpais.com.uy'
+  out = re.sub(replace_pattern, r'.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r'Stella Maris Pusino - spusino@elpais.com.uy'
+  out = re.sub(replace_pattern, r'.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r'Stella Maris Pusino \[spusino@elpais.com.uy\]'
+  out = re.sub(replace_pattern, r'.', out, 9999, re.IGNORECASE)
+
+  replace_pattern = r'spusino@elpais.com.uy'
+  out = re.sub(replace_pattern, r'.', out, 9999, re.IGNORECASE)
+
+  return out
+
+def clean_mariana_goday(line):
+  out = line
+
+  replace_pattern = r'(POR Mariana Goday.*?)?(mgoday@elpais.com.uy]?)'
+  out = re.sub(replace_pattern, r'.', out, 9999, re.IGNORECASE)
+
+  return out
+
+def clean_gabriela_rocha(line):
+  out = line
+
+  replace_pattern = r'(POR Gabriela Rocha.*?)?(grocha@elpais.com.uy)'
+  out = re.sub(replace_pattern, r'.', out, 9999, re.IGNORECASE)
+
+  return out
+
+def clean_diego_ferreira(line):
+  out = line
+
+  replace_pattern = r'(Por )?(DIEGO FERREIRA.*?)?(dferreira@elpais.com.uy]?)'
+  out = re.sub(replace_pattern, r'.', out, 9999, re.IGNORECASE)
+
+  return out
+
+def clean_silvana_nicola(line):
+  out = line
+
+  replace_pattern = r'(Por )?(SILVANA NICOLA.*?)?(snicola@elpais.com.uy]?)'
+  out = re.sub(replace_pattern, r'.', out, 9999, re.IGNORECASE)
+
+  return out
+
+
 # text = una noticia
 def clean_elpais_text(text):
   # sanitizo el texto
@@ -146,30 +299,51 @@ def clean_elpais_text(text):
   # Fechas
   # Formato dd mmm YYYY
   # al inicio
-  replace_pattern = r"^\d\d \w\w\w \d\d\d\d"
+  replace_pattern = r"^\d?\d \w\w\w \d\d\d\d"
   text = re.sub(replace_pattern, '', text)  
 
   # dentro el string
-  replace_pattern = r"\d\d \w\w\w \d\d\d\d"
+  replace_pattern = r"\d?\d \w\w\w \d\d\d\d"
   text = re.sub(replace_pattern, '.', text)  
 
   # Formato  dia mes nn YYYY hh:mm 
   # al inicio
-  replace_pattern = r"^\w\w\w \w\w\w \d\d \d\d\d\d \d\d:\d\d"
+  replace_pattern = r"^\w\w\w \w\w\w \d?\d \d\d\d\d \d\d:\d\d"
   text = re.sub(replace_pattern, '', text)
 
   # dentro del string
-  replace_pattern = r"\w\w\w \w\w\w \d\d \d\d\d\d \d\d:\d\d"
+  replace_pattern = r"\w\w\w \w\w\w \d?\d \d\d\d\d \d\d:\d\d"
   text = re.sub(replace_pattern, '.', text)
 
   # Formato -dia mmm dd YYYY- (sin hora)
   # al inicio
-  replace_pattern = r"^\w\w\w \w\w\w \d\d \d\d\d\d"
+  replace_pattern = r"^\w\w\w \w\w\w \d?\d \d\d\d\d"
   text = re.sub(replace_pattern, '', text)
 
   # dentro del string
-  replace_pattern = r"\w\w\w \w\w\w \d\d \d\d\d\d"
+  replace_pattern = r"\w\w\w \w\w\w \d?\d \d\d\d\d"
   text = re.sub(replace_pattern, '.', text) 
+
+  text = clean_jorge_chouy(text)
+  text = clean_gaston_pergola(text)
+  text = clean_sebastian_panzl(text)
+  text = clean_claudio_destefano(text)
+  text = clean_antonio_larronda(text)
+  text = clean_elbio_rodriguez(text)
+  text = clean_stella_maris(text)
+  text = clean_mariana_goday(text)
+  text = clean_gabriela_rocha(text)
+  text = clean_diego_ferreira(text)
+  text = clean_silvana_nicola(text)
+
+  # Elimino correos de autores
+  # reemplazo con un punto
+  replace_pattern = r'( jcraffo@elpais.com.uy| vdiaz@elpais.com.uy| pjimenez@seragro.com.uy| lmelendez@elpais.com.uy| nlussich@seragro.com.uy| claudio@bizers.com.ar)'
+  text = re.sub(replace_pattern, r'.', text, 9999, re.IGNORECASE)
+
+  # elimino sin reemplazar el correo
+  replace_pattern = r'(barilarius@yahoo.com|elpepepregunton@gmail.com)'
+  text = re.sub(replace_pattern, r'', text, 9999, re.IGNORECASE)
 
   # Elimino autores - formato " Por AAA AAA |"
   replace_pattern = r"(\w)(\s*Por \w* \w* \|)"
