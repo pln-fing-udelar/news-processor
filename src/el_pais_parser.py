@@ -14,6 +14,7 @@ def parse_data(
 
   paths = [str(x) for x in Path(input).glob("*.xml")]
 
+  all_unique_articles = []
   for path in paths:
     print(f'Processing {path}... ')
 
@@ -39,10 +40,12 @@ def parse_data(
 
     beautified_result = list(map(utils.clean_elpais_text, beautified_result))
 
-    new_file = path.split('/')[-1].split('.')[0]
-    with open(f'{output}{new_file}.txt', "w") as f:
-      for text in beautified_result:
-          f.write(text +"\n")
+    all_unique_articles = list(set(all_unique_articles + beautified_result))
+
+  new_file = 'el_pais'
+  with open(f'{output}{new_file}.txt', "w") as f:
+    for text in all_unique_articles:
+        f.write(text +"\n")
 
 if __name__ == "__main__":
     
