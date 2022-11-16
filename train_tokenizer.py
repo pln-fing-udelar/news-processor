@@ -1,6 +1,6 @@
 # pip install git+https://github.com/huggingface/transformers
 
-d = "/home/jp/Workspace/nlp/notebooks"
+d = "/clusteruy/home03/fing-pln-llm/dataset"
 
 from pathlib import Path
 
