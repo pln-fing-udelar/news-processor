@@ -1,4 +1,4 @@
-# news-processor/parser_data
+# news-processor
 This project process uruguayans newspapers dataset, and trains a BERT-like models from scratch using this dataset.
 This project is hosted by the Natural Language Processing Group from University of the Republic, Uruguay (http://www.fing.edu.uy/inco/grupos/pln/).
 ## Requirements
