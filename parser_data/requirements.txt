@@ -1,1 +1,6 @@
-Unidecode
+unidecode
+seaborn
+matplotlib
+tqdm
+ipython
+beautifulsoup4
