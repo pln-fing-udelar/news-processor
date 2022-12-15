@@ -24,6 +24,10 @@ If you want to process a specific newspaper's dataset, just run the correspondin
 python la_republica_parser.py
 ```
 
+## IMPORTANT!
+To run "La Diaria" corpus' parser, use the corresponding notebook "parser_data/notebooks/la-diaria/ipynb".
+
+
 ### Output files:
 Every output will be stored at `/output` folder. Each newspaper has it's own folder. There's also another file at `/output/all_news.txt` with all the news from every newspaper.
 
